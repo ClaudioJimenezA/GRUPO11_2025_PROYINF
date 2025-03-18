@@ -1,4 +1,4 @@
-# GRUPO05-2024-PROYINF
+# GRUPO04-2024-PROYINF
 Este es el repositorio del grupo 05 conformado por:
 Integrantes
 * Claudio Jimenez - Rol: 202273587-2
