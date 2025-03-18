@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Navegación entre Aplicaciones</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3">
+        <h1>Panel de Administración</h1>
+    </header>
+    <main class="d-flex flex-column align-items-center justify-content-center vh-100">
+        <h2 class="mb-4">Aplicaciones disponibles</h2>
+        <ul class="list-group text-center w-50">
+            <li class="list-group-item">
+                <a href="{% url 'index_pdfs' %}" class="btn btn-primary w-100 my-2">Gestión de PDFs</a>
+            </li>
+            <li class="list-group-item">
+                <a href="{% url 'index_fuentes' %}" class="btn btn-primary w-100 my-2">Buscador de Fuentes</a>
+            </li>
+            <li class="list-group-item">
+                <a href="{% url 'entrada_texto' %}" class="btn btn-primary w-100 my-2">Gestión de Plantillas</a>
+            </li>    
+        </ul>
+    </main>
+    <footer class="text-center mt-4">
+        <p>Derechos reservados &copy; 2024 VIGIFIA</p>
+    </footer>
+</body>
+</html>
