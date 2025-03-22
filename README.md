@@ -9,4 +9,4 @@ Este es el repositorio del grupo 11 conformado por:
 ## Wiki
 
 Puede acceder a la wiki del proyecto de Analisis del semestre pasado (2024-2) mediante el siguiente [enlace](https://github.com/ClaudioJimenezA/GRUPO05-2024-PROYINF/wiki)
-  
+[Link al proyecto](https://github.com/ClaudioJimenezA/GRUPO05-2024-PROYINF)
