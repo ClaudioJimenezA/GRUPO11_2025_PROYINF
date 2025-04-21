@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'buscador_fuentes',
     'gestor_pdfs',
     'plantillas',
+    'editor',
+    'tinymce',
+
 ]
 
 MIDDLEWARE = [

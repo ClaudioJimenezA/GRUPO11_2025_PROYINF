@@ -33,6 +33,9 @@ urlpatterns = [
     path('fuentes/', include('buscador_fuentes.urls')),
     path('pdfs/', include('gestor_pdfs.urls')),
     path('plantillas/', include('plantillas.urls')),
+    path('tinymce/', include('tinymce.urls')),
+    path('tinymce/', include('tinymce.urls')),
+    path('editor/', include('editor.urls')),  
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     
     # Esto redirige la raíz a /panel/

@@ -1,0 +1,14 @@
+<!-- editor/templates/editor/boletin_list.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Boletines</title>
+</head>
+<body>
+    <h1>Lista de Boletines</h1>
+    {% for boletin in boletines %}
+        <p>{{ boletin.titulo }}</p>
+    {% endfor %}
+</body>
+</html>
