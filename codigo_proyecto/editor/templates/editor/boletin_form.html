@@ -1,14 +1,23 @@
 <!-- editor/templates/editor/boletin_list.html -->
+{% load static %}
+{% block extrahead %}
+    {{ form.media }}
+{% endblock %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Boletines</title>
+    <title>Nuevo Boletín</title>
+    {% load static %}
+    {{ form.media }}
 </head>
 <body>
-    <h1>Lista de Boletines</h1>
-    {% for boletin in boletines %}
-        <p>{{ boletin.titulo }}</p>
-    {% endfor %}
+    <h1>Crear nuevo boletín</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
 </body>
 </html>
+

@@ -8,7 +8,14 @@
 <body>
     <h1>Lista de Boletines</h1>
     {% for boletin in boletines %}
-        <p>{{ boletin.titulo }}</p>
+    <div>
+      <h3>{{ boletin.titulo }}</h3>
+      <p>Estado: {{ boletin.get_estado_display }}</p>
+      <a href="{% url 'editar_boletin' boletin.pk %}">Editar</a>
+      <a href="{% url 'preview_boletin' boletin.pk %}">Previsualizar</a>
+  </div>
     {% endfor %}
+    <a href="{% url 'nuevo_boletin' %}" class="btn btn-primary">Crear nuevo boletín</a>
 </body>
 </html>
+

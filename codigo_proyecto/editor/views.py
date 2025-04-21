@@ -24,3 +24,15 @@ def preview_boletin(request, pk):
     boletin = get_object_or_404(Boletin, pk=pk)
     return render(request, 'editor/boletin_detail.html', {'boletin': boletin})
 
+def editar_boletin(request, pk):
+    boletin = get_object_or_404(Boletin, pk=pk)
+    if request.method == 'POST':
+        form = BoletinForm(request.POST, instance=boletin)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_boletines')
+    else:
+        form = BoletinForm(instance=boletin)
+    return render(request, 'editor/boletin_form.html', {'form': form, 'boletin': boletin})
+
+
