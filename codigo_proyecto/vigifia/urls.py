@@ -16,16 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 
-from django.urls import include, path, re_path
+from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import admin_index  # Importa la vista
-from django.shortcuts import render, redirect
-from django.views.static import serve
-from . import views
+from django.shortcuts import redirect
 
-def admin_view(request):
-    return render(request, 'admin.html')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,9 +31,7 @@ urlpatterns = [
     path('pdfs/', include('gestor_pdfs.urls')),
     path('plantillas/', include('plantillas.urls')),
     path('tinymce/', include('tinymce.urls')),
-    path('tinymce/', include('tinymce.urls')),
     path('editor/', include('editor.urls')),  
-    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     
     # Esto redirige la raíz a /panel/
     path('', lambda request: redirect('admin_index', permanent=False))
