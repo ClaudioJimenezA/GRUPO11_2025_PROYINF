@@ -9,15 +9,15 @@
     <script>
         tinymce.init({
             selector: '#id_contenido',
-            plugins: 'advlist autolink lists link charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount autosave',
-            toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | code | fullscreen',
+            plugins: 'image code fullscreen',
+            toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright | bullist numlist | image | code | fullscreen',
+            images_upload_url: '{% url "upload_image" %}',
+            automatic_uploads: true,
+            images_upload_credentials: true,
             menubar: true,
-            height: 600,
-            autosave_interval: '30s',
-            autosave_retention: '2m',
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            height: 600
         });
-    </script>
+    </script>    
     <style>
         body {
             margin: 0;
