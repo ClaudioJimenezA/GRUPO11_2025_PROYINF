@@ -19,7 +19,7 @@
     {% for boletin in boletines %}
     <div>
       <h3>{{ boletin.titulo }}</h3>
-      <p>Estado: {{ boletin.get_estado_display }}</p>
+      <p>Estado: {% if boletin.publicado %}Publicado{% else %}Borrador{% endif %}</p>
       <a href="{% url 'editar_boletin' boletin.pk %}">Editar</a>
       <a href="{% url 'preview_boletin' boletin.pk %}">Previsualizar</a>
   </div>

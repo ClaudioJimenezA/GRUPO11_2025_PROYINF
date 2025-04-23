@@ -60,4 +60,45 @@ def editar_boletin(request, pk):
         form = BoletinForm(instance=boletin)
     return render(request, 'editor/boletin_form.html', {'form': form, 'boletin': boletin})
 
+# def boletin_form(request, pk=None):
+#     instance = Boletin.objects.get(pk=pk) if pk else None
+#     if request.method == 'POST':
+#         form = BoletinForm(request.POST, instance=instance)
+#         if form.is_valid():
+#             boletin = form.save(commit=False)
+#             accion = request.POST.get('accion')
 
+#             if accion == 'guardar':
+#                 boletin.estado = 'borrador'
+#                 boletin.save()
+#                 return redirect('lista_boletines')
+
+#             elif accion == 'previsualizar':
+#                 return render(request, 'editor/boletin_preview.html', {'boletin': boletin, 'preview': True})
+#     else:
+#         form = BoletinForm(instance=instance)
+
+#     return render(request, 'editor/boletin_form.html', {'form': form})
+
+
+def boletin_form(request, pk=None):
+    if pk:
+        boletin = get_object_or_404(Boletin, pk=pk)
+    else:
+        boletin = None
+
+    if request.method == 'POST':
+        form = BoletinForm(request.POST, instance=boletin)
+        if form.is_valid():
+            boletin = form.save(commit=False)
+            if request.POST.get("accion") == "previsualizar":
+                # Aún no implementado: mostrar plantilla de previsualización
+                pass
+            else:
+                boletin.publicado = False  # Guardar como borrador
+                boletin.save()
+                return redirect('lista_boletines')
+    else:
+        form = BoletinForm(instance=boletin)
+
+    return render(request, 'editor/boletin_form.html', {'form': form})

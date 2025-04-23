@@ -9,7 +9,7 @@
     <script>
         tinymce.init({
             selector: '#id_contenido',
-            plugins: 'image code fullscreen',
+            plugins: 'link image code fullscreen',
             toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright | bullist numlist | image | code | fullscreen',
             images_upload_url: '{% url "upload_image" %}',
             automatic_uploads: true,
@@ -39,14 +39,10 @@
             margin: 0;
         }
 
-        .editor-actions button {
-            margin-left: 10px;
-        }
-
         .editor-container {
             padding: 2rem;
             max-width: 1000px;
-            margin: auto;
+            margin: 2rem auto;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -57,7 +53,8 @@
         }
 
         .editor-container input[type="text"],
-        .editor-container select {
+        .editor-container select,
+        .editor-container textarea {
             width: 100%;
             padding: 0.5rem;
             margin-bottom: 1rem;
@@ -68,6 +65,12 @@
         .editor-actions {
             display: flex;
             justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .editor-actions button,
+        .editor-actions a {
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -75,30 +78,32 @@
 
 <div class="editor-header">
     <h1>{% if form.instance.pk %}Editar{% else %}Nuevo{% endif %} Boletín</h1>
-    <div class="editor-actions">
-        <form method="post" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Guardar</button>
-        </form>
-        <a href="{% url 'lista_boletines' %}" class="btn btn-secondary">Salir</a>
-    </div>
 </div>
 
 <div class="editor-container">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <label for="id_titulo">Título</label>
-        {{ form.titulo }}
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <strong>Error al guardar:</strong>
+                <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {{ form.as_p }}
 
-        <label for="id_contenido">Contenido</label>
-        {{ form.contenido }}
-
-        <label for="id_estado">Estado</label>
-        {{ form.estado }}
+        <div class="editor-actions">
+            <button type="submit" name="accion" value="guardar" class="btn btn-success">Guardar</button>
+            <button type="submit" name="accion" value="previsualizar" class="btn btn-secondary">Previsualizar</button>
+            <a href="{% url 'lista_boletines' %}" class="btn btn-secondary">Salir</a>
+        </div>
     </form>
 </div>
 
 </body>
 </html>
-
-
