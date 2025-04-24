@@ -80,25 +80,29 @@ def editar_boletin(request, pk):
 
 #     return render(request, 'editor/boletin_form.html', {'form': form})
 
-
 def boletin_form(request, pk=None):
-    if pk:
-        boletin = get_object_or_404(Boletin, pk=pk)
-    else:
-        boletin = None
+    print("LLEGÓ AL FORMULARIO")
+    print("Método:", request.method)
+
+    boletin = get_object_or_404(Boletin, pk=pk) if pk else None
 
     if request.method == 'POST':
+        print("SE ENVÍO UN POST")
+        print("Datos POST:", request.POST)
+
         form = BoletinForm(request.POST, instance=boletin)
+
         if form.is_valid():
+            print("Formulario válido")
             boletin = form.save(commit=False)
-            if request.POST.get("accion") == "previsualizar":
-                # Aún no implementado: mostrar plantilla de previsualización
-                pass
-            else:
-                boletin.publicado = False  # Guardar como borrador
-                boletin.save()
-                return redirect('lista_boletines')
+            boletin.publicado = False  # o True, según tu lógica
+            boletin.save()
+            return redirect('lista_boletines')
+        else:
+            print("Formulario inválido:", form.errors)
+
     else:
         form = BoletinForm(instance=boletin)
 
     return render(request, 'editor/boletin_form.html', {'form': form})
+

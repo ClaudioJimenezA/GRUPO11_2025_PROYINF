@@ -18,6 +18,22 @@
             height: 600
         });
     </script>    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+
+            if (form) {
+                form.addEventListener("submit", function (e) {
+                    // Forzar a TinyMCE guardar su contenido en el textarea original
+                    if (typeof tinymce !== "undefined") {
+                        tinymce.triggerSave();
+                    }
+
+                    console.log("Formulario enviado vía JavaScript");
+                });
+            }
+        });
+    </script>
     <style>
         body {
             margin: 0;
@@ -81,8 +97,10 @@
 </div>
 
 <div class="editor-container">
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" onsubmit="return beforeSubmit();">
+
         {% csrf_token %}
+        
         {% if form.errors %}
             <div class="alert alert-danger">
                 <strong>Error al guardar:</strong>
@@ -95,6 +113,7 @@
                 </ul>
             </div>
         {% endif %}
+
         {{ form.as_p }}
 
         <div class="editor-actions">
@@ -106,4 +125,21 @@
 </div>
 
 </body>
+<script>
+    function beforeSubmit() {
+        if (typeof tinymce !== "undefined") {
+            tinymce.triggerSave();
+        }
+
+        const contenido = document.getElementById("id_contenido");
+        if (!contenido.value.trim()) {
+            alert("El contenido no puede estar vacío.");
+            contenido.focus();
+            return false; // prevenir el envío
+        }
+
+        return true; // continuar con el envío
+    }
+</script>
+
 </html>

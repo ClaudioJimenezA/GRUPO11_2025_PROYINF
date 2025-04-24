@@ -8,6 +8,9 @@ class BoletinForm(forms.ModelForm):
         model = Boletin
         fields = ['titulo', 'contenido']
         widgets = {
-            'contenido': forms.Textarea(attrs={'id': 'id_contenido'}),
+           'contenido': forms.Textarea(attrs={'id': 'id_contenido'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['contenido'].required = False
