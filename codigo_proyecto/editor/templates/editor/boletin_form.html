@@ -9,8 +9,39 @@
     <script>
         tinymce.init({
             selector: '#id_contenido',
-            plugins: 'link image code fullscreen',
-            toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright | bullist numlist | image | code | fullscreen',
+            plugins: 'template link image code fullscreen',
+            toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist | image | code | fullscreen',
+             templates: [
+                        {
+                            title: 'Artículo',
+                            description: 'Plantilla para artículo común',
+                            content: `
+                            <h1>Título del artículo</h1>
+                            <h2>Subtítulo</h2>
+                            <p>Introduce aquí el contenido...</p>
+                            `
+                        },
+                        {
+                            title: 'Portada',
+                            description: 'Portada simple con imagen',
+                            content: `
+                            <div style="text-align:center;">
+                                <h1>Boletín</h1>
+                                <img src="/media/uploads/portada.jpg" alt="Imagen de portada" style="width:50%">
+                            </div>
+                            `
+                        },
+                        {
+                            title: 'Referencias',
+                            description: 'Bloque para referencias bibliográficas',
+                            content: `
+                            <h3>Referencias</h3>
+                            <ul>
+                                <li>Autor, Año. Título del artículo. Revista.</li>
+                            </ul>
+                            `
+                        }
+                        ],
             images_upload_url: '{% url "upload_image" %}',
             automatic_uploads: true,
             images_upload_credentials: true,

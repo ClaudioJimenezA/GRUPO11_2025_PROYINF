@@ -6,6 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import os
 from django.conf import settings
+from django.utils.timezone import now
+from django.core.files.storage import default_storage
+
 
 @csrf_exempt
 def upload_image(request):
@@ -30,7 +33,8 @@ def upload_image(request):
 
 def lista_boletines(request):
     boletines = Boletin.objects.all().order_by('-fecha_creacion')
-    return render(request, 'editor/boletin_list.html', {'boletines': boletines})
+    plantillas = Boletin.objects.filter(es_plantilla=True)
+    return render(request, 'editor/boletin_list.html', {'boletines': boletines, 'plantillas': plantillas})
 
 def detalle_boletin(request, pk):
     boletin = get_object_or_404(Boletin, pk=pk)
@@ -106,3 +110,20 @@ def boletin_form(request, pk=None):
 
     return render(request, 'editor/boletin_form.html', {'form': form})
 
+def usar_plantilla(request, pk):
+    plantilla = get_object_or_404(Boletin, pk=pk, es_plantilla=True)
+    nuevo_boletin = Boletin.objects.create(
+        titulo="Nuevo boletín desde plantilla: " + plantilla.titulo,
+        contenido=plantilla.contenido,
+        imagen=plantilla.imagen,
+        publicado=False,
+        es_plantilla=False,
+        fecha_creacion=now(),
+    )
+    return redirect('editar_boletin', pk=nuevo_boletin.pk)
+
+def eliminar_boletin(request, pk):
+    boletin = get_object_or_404(Boletin, pk=pk)
+    if not boletin.publicado:
+        boletin.delete()
+    return redirect('lista_boletines')
