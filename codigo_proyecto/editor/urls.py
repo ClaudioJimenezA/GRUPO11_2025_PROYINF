@@ -11,6 +11,7 @@ urlpatterns = [
     path('boletin/eliminar/<int:pk>/', views.eliminar_boletin, name='eliminar_boletin'),
     path('tinymce/templates/', views.tinymce_templates, name='tinymce_templates'),
      path('boletin/<int:pk>/publicar/', views.publicar_boletin, name='publicar_boletin'),
+     
 
 
 ]

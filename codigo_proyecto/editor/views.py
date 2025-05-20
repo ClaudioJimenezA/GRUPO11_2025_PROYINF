@@ -6,13 +6,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 import os
 from django.conf import settings
-from django.utils.timezone import now
+from django.utils import timezone, text
 from django.core.files.storage import default_storage
 from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.core.files.base import ContentFile
 from io import BytesIO
 from gestor_pdfs.models import DocumentoPDF
+import tempfile
+from django.contrib import messages
 
 
 
@@ -137,7 +139,7 @@ def usar_plantilla(request, pk):
         imagen=plantilla.imagen,
         publicado=False,
         es_plantilla=False,
-        fecha_creacion=now(),
+        fecha_creacion= timezone.now(),
     )
     return redirect('editar_boletin', pk=nuevo_boletin.pk)
 
@@ -171,8 +173,12 @@ def exportar_boletin_pdf(boletin):
 
 def publicar_boletin(request, pk):
     boletin = get_object_or_404(Boletin, pk=pk)
+    if not boletin.contenido.strip():
+        messages.error(request, "El boletín no tiene contenido para publicar.")
+        return redirect('editar_boletin', pk=pk)
+    
     boletin.publicado = True
-    boletin.fecha_creacion = now()  # opcional si no se estableció aún
+    boletin.fecha_creacion = timezone.now()  # opcional si no se estableció aún
     boletin.save()
 
     # Generar el PDF
@@ -180,9 +186,13 @@ def publicar_boletin(request, pk):
 
     # Registrar en la app de PDFs
     DocumentoPDF.objects.create(
-        titulo=boletin.titulo,
+        nombre=boletin.titulo,
         archivo=pdf_content,
-        etiquetas="boletin"  # o extrae etiquetas desde el boletín si tienes lógica definida
+        etiquetas= text.slugify(boletin.titulo) # o extrae etiquetas desde el boletín si tienes lógica definida
     )
 
-    return redirect('detalle_boletin', pk=pk)
+    messages.success(request, "Boletín publicado y PDF generado correctamente.")
+    return redirect('editar_boletin', pk=pk)
+ 
+
+

@@ -10,7 +10,6 @@
     <h1>Lista de Boletines</h1>
     {% for boletin in boletines %}
         <p>{{ boletin.titulo }}</p>
-        <a href="{% url 'publicar_boletin' pk=boletin.pk %}" class="btn btn-success">Publicar y generar PDF</a>
     {% endfor %}
 </body>
 </html>
