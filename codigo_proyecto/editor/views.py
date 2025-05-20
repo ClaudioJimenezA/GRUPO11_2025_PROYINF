@@ -3,11 +3,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Boletin
 from .forms import BoletinForm
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import os
 from django.conf import settings
 from django.utils.timezone import now
 from django.core.files.storage import default_storage
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from django.core.files.base import ContentFile
+from io import BytesIO
+from gestor_pdfs.models import DocumentoPDF
+
+
+
+
+
 
 
 @csrf_exempt
@@ -98,10 +108,19 @@ def boletin_form(request, pk=None):
 
         if form.is_valid():
             print("Formulario válido")
-            boletin = form.save(commit=False)
-            boletin.publicado = False  # o True, según tu lógica
-            boletin.save()
-            return redirect('lista_boletines')
+            accion = request.POST.get('accion')
+
+            if accion == 'previsualizar':
+                preview_boletin = form.save(commit=False)
+                return render(request, 'editor/boletin_preview.html', {
+                    'boletin': preview_boletin,
+                    'preview': True
+                })
+            elif accion == 'guardar':
+                boletin = form.save(commit=False)
+                boletin.publicado = False
+                boletin.save()
+                return redirect('lista_boletines')
         else:
             print("Formulario inválido:", form.errors)
 
@@ -141,3 +160,29 @@ def tinymce_templates(request):
         })
 
     return JsonResponse(templates, safe=False)
+
+def exportar_boletin_pdf(boletin):
+    html_string = render_to_string('editor/boletin_pdf.html', {'boletin': boletin})
+    pdf_file = BytesIO()
+    HTML(string=html_string).write_pdf(target=pdf_file)
+
+    # Guarda el PDF como archivo en memoria
+    return ContentFile(pdf_file.getvalue(), name=f"boletin_{boletin.pk}.pdf")
+
+def publicar_boletin(request, pk):
+    boletin = get_object_or_404(Boletin, pk=pk)
+    boletin.publicado = True
+    boletin.fecha_creacion = now()  # opcional si no se estableció aún
+    boletin.save()
+
+    # Generar el PDF
+    pdf_content = exportar_boletin_pdf(boletin)
+
+    # Registrar en la app de PDFs
+    DocumentoPDF.objects.create(
+        titulo=boletin.titulo,
+        archivo=pdf_content,
+        etiquetas="boletin"  # o extrae etiquetas desde el boletín si tienes lógica definida
+    )
+
+    return redirect('detalle_boletin', pk=pk)

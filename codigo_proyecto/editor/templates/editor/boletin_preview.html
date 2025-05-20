@@ -1,13 +1,47 @@
-{% extends 'base.html' %}
-{% block content %}
-<h1>Vista previa del Boletín</h1>
-<hr>
-<h2>{{ boletin.titulo }}</h2>
-<div>
-    {{ boletin.contenido|safe }}
-</div>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Previsualización del Boletín</title>
+    <link rel="stylesheet" href="{% static 'css/editor.css' %}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 2rem;
+        }
+        .preview-container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .preview-actions {
+            margin-top: 2rem;
+            text-align: right;
+        }
+        .preview-actions a {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <h1>{{ boletin.titulo }}</h1>
+        {% if boletin.imagen %}
+            <img src="{{ boletin.imagen.url }}" alt="Imagen del boletín" style="max-width: 100%; height: auto;">
+        {% endif %}
+        <div>
+            {{ boletin.contenido|safe }}
+        </div>
 
-<div style="margin-top: 20px;">
-    <a href="{% url 'boletin_form' boletin.id %}" class="btn btn-primary">Volver a editar</a>
-</div>
-{% endblock %}
+        <div class="preview-actions">
+            <a href="javascript:history.back()" class="btn btn-secondary">Volver a editar</a>
+        </div>
+    </div>
+</body>
+</html>
