@@ -127,3 +127,17 @@ def eliminar_boletin(request, pk):
     if not boletin.publicado:
         boletin.delete()
     return redirect('lista_boletines')
+
+def tinymce_templates(request):
+    plantillas = Boletin.objects.filter(es_plantilla=True).exclude(contenido__isnull=True).exclude(contenido__exact='')
+
+
+    templates = []
+    for plantilla in plantillas:
+        templates.append({
+            'title': plantilla.titulo,
+            'description': f'Plantilla: {plantilla.titulo}',
+            'content': plantilla.contenido,
+        })
+
+    return JsonResponse(templates, safe=False)
