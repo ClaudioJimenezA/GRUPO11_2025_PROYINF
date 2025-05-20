@@ -8,7 +8,7 @@
     <script src="{% static 'tinymce/tinymce.min.js' %}"></script>
     <script>
         tinymce.init({
-            selector: '#id_contenido',
+            selector: 'textarea',
             plugins: 'template link image code fullscreen',
             toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist | image | code | fullscreen',
              templates: [
@@ -44,6 +44,9 @@
                         ],
             images_upload_url: '{% url "upload_image" %}',
             automatic_uploads: true,
+            relative_urls: false,
+            remove_script_host: false,
+            convert_urls: true,
             images_upload_credentials: true,
             menubar: true,
             height: 600
