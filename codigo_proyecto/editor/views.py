@@ -15,8 +15,8 @@ from io import BytesIO
 from gestor_pdfs.models import DocumentoPDF
 import tempfile
 from django.contrib import messages
-
-
+from django.http import HttpResponseForbidden
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -43,10 +43,13 @@ def upload_image(request):
         return JsonResponse({'location': image_url})
 
 
+@csrf_exempt
 def lista_boletines(request):
+    if request.session.get('supabase_class') not in ['editor', 'administrador']:
+        return HttpResponseForbidden("Acceso no permitido.")
+
     boletines = Boletin.objects.all().order_by('-fecha_creacion')
-    plantillas = Boletin.objects.filter(es_plantilla=True)
-    return render(request, 'editor/boletin_list.html', {'boletines': boletines, 'plantillas': plantillas})
+    return render(request, 'editor/boletin_list.html', {'boletines': boletines})
 
 def detalle_boletin(request, pk):
     boletin = get_object_or_404(Boletin, pk=pk)
@@ -65,16 +68,21 @@ def preview_boletin(request, pk):
     boletin = get_object_or_404(Boletin, pk=pk)
     return render(request, 'editor/boletin_detail.html', {'boletin': boletin})
 
+
+@csrf_exempt
 def editar_boletin(request, pk):
+    if request.session.get('supabase_class') != 'editor':
+        return HttpResponseForbidden("Acceso no permitido.")
+
     boletin = get_object_or_404(Boletin, pk=pk)
+
     if request.method == 'POST':
         form = BoletinForm(request.POST, instance=boletin)
         if form.is_valid():
             form.save()
             return redirect('lista_boletines')
-    else:
-        form = BoletinForm(instance=boletin)
-    return render(request, 'editor/boletin_form.html', {'form': form, 'boletin': boletin})
+        else:
+            print("Errores del formulario:", form.errors)
 
 # def boletin_form(request, pk=None):
 #     instance = Boletin.objects.get(pk=pk) if pk else None
