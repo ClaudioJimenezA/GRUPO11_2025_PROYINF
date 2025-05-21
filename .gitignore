@@ -1,2 +1,7 @@
-# Ignorar el entorno virtual
+# Entorno virtual de Python
 venv/
+.env/
+.venv/
+
+# Archivos de base de datos locales
+codigo_proyecto/db.sqlite3
