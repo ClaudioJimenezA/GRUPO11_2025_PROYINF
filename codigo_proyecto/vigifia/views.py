@@ -7,7 +7,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
-
+from django.views.decorators.csrf import csrf_exempt
 
 # Página principal
 def admin_index(request):
@@ -55,7 +55,7 @@ def supabase_register(request):
             messages.error(request, f'Error al crear cuenta: {e}')
 
     return render(request, 'register.html')
-
+@csrf_exempt
 def supabase_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
