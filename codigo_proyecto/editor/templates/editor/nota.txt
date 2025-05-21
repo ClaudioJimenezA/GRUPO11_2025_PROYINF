@@ -1,2 +1,9 @@
 H3.1 y HU 3.2 esta en la aplicacion de editor, al darle a crear nuevo boletin o editar, te lleva al editor visual de boletines
-ahi se encuentra los criterios trabajados.
+ahi se encuentra los criterios trabajados de esta historias.
+
+para la previsualizacion es un boton que te muestra el estado en el que esta el boletin en el que estas trabajando actualmente
+para las plantillas(templates) en la lista de boletines, que es lo que aparece al abrir la app editor,aparece la opcion de usar como base 
+tambien dentro del editor visual,que es lo que se abre al darle a editar en la lista de boletines borradores, puedes marcar como es plantilla y luego
+guardar para generar nuevas plantillas y por ultimo para usar plantillas ya definidas, aparte del metodo de usar como base que aparece al principio, tambien se puede hacer dentro del mismo editor
+presionando Insert en la barra de tareas, luego Insert templates y ahi se abre una ventana con una barra donde se puede seleccionar las plantillas disponibles
+ 

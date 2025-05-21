@@ -6,10 +6,10 @@ PORT = 8000
 base_url = f"http://127.0.0.1:{PORT}"
 
 # Usuarios por rol
-EDITOR_USER = "editot"
+EDITOR_USER = "wario"
 EDITOR_PASS = "editor"
 
-LECTOR_USER = "lector"
+LECTOR_USER = "waluigi"
 LECTOR_PASS = "lector"
 
 
