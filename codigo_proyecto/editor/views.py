@@ -3,9 +3,24 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Boletin
 from .forms import BoletinForm
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import os
 from django.conf import settings
+from django.utils import timezone, text
+from django.core.files.storage import default_storage
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from django.core.files.base import ContentFile
+from io import BytesIO
+from gestor_pdfs.models import DocumentoPDF
+import tempfile
+from django.contrib import messages
+
+
+
+
+
+
 
 @csrf_exempt
 def upload_image(request):
@@ -30,7 +45,8 @@ def upload_image(request):
 
 def lista_boletines(request):
     boletines = Boletin.objects.all().order_by('-fecha_creacion')
-    return render(request, 'editor/boletin_list.html', {'boletines': boletines})
+    plantillas = Boletin.objects.filter(es_plantilla=True)
+    return render(request, 'editor/boletin_list.html', {'boletines': boletines, 'plantillas': plantillas})
 
 def detalle_boletin(request, pk):
     boletin = get_object_or_404(Boletin, pk=pk)
@@ -94,10 +110,20 @@ def boletin_form(request, pk=None):
 
         if form.is_valid():
             print("Formulario válido")
-            boletin = form.save(commit=False)
-            boletin.publicado = False  # o True, según tu lógica
-            boletin.save()
-            return redirect('lista_boletines')
+            accion = request.POST.get('accion')
+
+            if accion == 'previsualizar':
+                preview_boletin = form.save(commit=False)
+                return render(request, 'editor/boletin_preview.html', {
+                    'boletin': preview_boletin,
+                    'preview': True
+                })
+            elif accion == 'guardar':
+                boletin = form.save(commit=False)
+                boletin.publicado = False
+                boletin.save()
+                return redirect('editar_boletin', pk=boletin.pk)
+
         else:
             print("Formulario inválido:", form.errors)
 
@@ -105,4 +131,69 @@ def boletin_form(request, pk=None):
         form = BoletinForm(instance=boletin)
 
     return render(request, 'editor/boletin_form.html', {'form': form})
+
+def usar_plantilla(request, pk):
+    plantilla = get_object_or_404(Boletin, pk=pk, es_plantilla=True)
+    nuevo_boletin = Boletin.objects.create(
+        titulo="Nuevo boletín desde plantilla: " + plantilla.titulo,
+        contenido=plantilla.contenido,
+        imagen=plantilla.imagen,
+        publicado=False,
+        es_plantilla=False,
+        fecha_creacion= timezone.now(),
+    )
+    return redirect('editar_boletin', pk=nuevo_boletin.pk)
+
+def eliminar_boletin(request, pk):
+    boletin = get_object_or_404(Boletin, pk=pk)
+    if not boletin.publicado:
+        boletin.delete()
+    return redirect('lista_boletines')
+
+def tinymce_templates(request):
+    plantillas = Boletin.objects.filter(es_plantilla=True).exclude(contenido__isnull=True).exclude(contenido__exact='')
+
+
+    templates = []
+    for plantilla in plantillas:
+        templates.append({
+            'title': plantilla.titulo,
+            'description': f'Plantilla: {plantilla.titulo}',
+            'content': plantilla.contenido,
+        })
+
+    return JsonResponse(templates, safe=False)
+
+def exportar_boletin_pdf(boletin):
+    html_string = render_to_string('editor/boletin_pdf.html', {'boletin': boletin})
+    pdf_file = BytesIO()
+    HTML(string=html_string).write_pdf(target=pdf_file)
+
+    # Guarda el PDF como archivo en memoria
+    return ContentFile(pdf_file.getvalue(), name=f"boletin_{boletin.pk}.pdf")
+
+def publicar_boletin(request, pk):
+    boletin = get_object_or_404(Boletin, pk=pk)
+    if not boletin.contenido.strip():
+        messages.error(request, "El boletín no tiene contenido para publicar.")
+        return redirect('editar_boletin', pk=pk)
+    
+    boletin.publicado = True
+    boletin.fecha_creacion = timezone.now()  # opcional si no se estableció aún
+    boletin.save()
+
+    # Generar el PDF
+    pdf_content = exportar_boletin_pdf(boletin)
+
+    # Registrar en la app de PDFs
+    DocumentoPDF.objects.create(
+        nombre=boletin.titulo,
+        archivo=pdf_content,
+        etiquetas= text.slugify(boletin.titulo) # o extrae etiquetas desde el boletín si tienes lógica definida
+    )
+
+    messages.success(request, "Boletín publicado y PDF generado correctamente.")
+    return redirect('editar_boletin', pk=pk)
+ 
+
 

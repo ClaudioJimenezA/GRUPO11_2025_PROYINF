@@ -8,11 +8,15 @@
     <script src="{% static 'tinymce/tinymce.min.js' %}"></script>
     <script>
         tinymce.init({
-            selector: '#id_contenido',
-            plugins: 'link image code fullscreen',
-            toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright | bullist numlist | image | code | fullscreen',
+            selector: 'textarea',
+            plugins: 'template link image code fullscreen',
+            toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist | image | code | fullscreen',
+             templates: '{% url "tinymce_templates" %}',
             images_upload_url: '{% url "upload_image" %}',
             automatic_uploads: true,
+            relative_urls: false,
+            remove_script_host: false,
+            convert_urls: true,
             images_upload_credentials: true,
             menubar: true,
             height: 600
@@ -119,10 +123,24 @@
         <div class="editor-actions">
             <button type="submit" name="accion" value="guardar" class="btn btn-success">Guardar</button>
             <button type="submit" name="accion" value="previsualizar" class="btn btn-secondary">Previsualizar</button>
+            
+            {% if form.instance.pk %}
+                <a href="{% url 'publicar_boletin' pk=form.instance.pk %}" class="btn btn-primary">Publicar</a>
+            {% endif %}
+            
             <a href="{% url 'lista_boletines' %}" class="btn btn-secondary">Salir</a>
         </div>
+
     </form>
 </div>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
 
 </body>
 <script>

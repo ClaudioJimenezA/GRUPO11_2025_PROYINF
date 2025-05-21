@@ -1,5 +1,7 @@
 {% load static %}
 <!-- editor/templates/editor/boletin_list.html -->
+
+
 <!DOCTYPE html>
 <html lang="es">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
@@ -19,9 +21,17 @@
     {% for boletin in boletines %}
     <div>
       <h3>{{ boletin.titulo }}</h3>
+       {% if boletin.es_plantilla %}
+      <p><em>Plantilla</em></p>
+      <a href="{% url 'usar_plantilla' boletin.pk %}">Usar como base</a>
+    {% else %}
+      <a href="{% url 'editar_boletin' boletin.pk %}">Editar</a>
+       {% endif %}
+       {% if not boletin.publicado %}
+            <a href="{% url 'eliminar_boletin' boletin.pk %}" class="btn btn-danger">Eliminar</a>
+        {% endif %}
       <p>Estado: {% if boletin.publicado %}Publicado{% else %}Borrador{% endif %}</p>
       <a href="{% url 'editar_boletin' boletin.pk %}">Editar</a>
-      <a href="{% url 'preview_boletin' boletin.pk %}">Previsualizar</a>
   </div>
     {% endfor %}
     <a href="{% url 'nuevo_boletin' %}" class="btn btn-primary">Crear nuevo boletín</a>

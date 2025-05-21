@@ -138,7 +138,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "buscador_fuentes/static",  # Ruta donde Django buscará archivos estáticos adicionales
+    BASE_DIR / "buscador_fuentes/static",
+    BASE_DIR / "static",  # Ruta donde Django buscará archivos estáticos adicionales
 ]
 
 

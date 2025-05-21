@@ -6,7 +6,7 @@ from .models import Boletin
 class BoletinForm(forms.ModelForm):
     class Meta:
         model = Boletin
-        fields = ['titulo', 'contenido']
+        fields = ['titulo', 'contenido', 'imagen', 'publicado', 'es_plantilla']
         widgets = {
            'contenido': forms.Textarea(attrs={'id': 'id_contenido'}),
         }
