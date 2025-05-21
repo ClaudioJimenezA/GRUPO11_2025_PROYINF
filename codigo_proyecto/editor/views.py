@@ -122,7 +122,8 @@ def boletin_form(request, pk=None):
                 boletin = form.save(commit=False)
                 boletin.publicado = False
                 boletin.save()
-                return redirect('lista_boletines')
+                return redirect('editar_boletin', pk=boletin.pk)
+
         else:
             print("Formulario inválido:", form.errors)
 

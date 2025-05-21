@@ -123,9 +123,14 @@
         <div class="editor-actions">
             <button type="submit" name="accion" value="guardar" class="btn btn-success">Guardar</button>
             <button type="submit" name="accion" value="previsualizar" class="btn btn-secondary">Previsualizar</button>
-            <a href="{% url 'publicar_boletin' pk=form.instance.pk %}" class="btn btn-primary">Publicar</a>
+            
+            {% if form.instance.pk %}
+                <a href="{% url 'publicar_boletin' pk=form.instance.pk %}" class="btn btn-primary">Publicar</a>
+            {% endif %}
+            
             <a href="{% url 'lista_boletines' %}" class="btn btn-secondary">Salir</a>
         </div>
+
     </form>
 </div>
 
