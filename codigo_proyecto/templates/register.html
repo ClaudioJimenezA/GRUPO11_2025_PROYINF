@@ -3,34 +3,199 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --light-color: #f9fafb;
+            --dark-color: #1f2937;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #f9fafb;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+       
+        h3 {
+            color: var(--dark-color);
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        
+    
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-3 {
+            margin-top: 16px;
+        }
+        
+        .mb-3 {
+            margin-bottom: 16px;
+        }
+        
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .alert-error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .sombra {
+            filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.4));
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 20px;
+            }
+            .logo {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
-<body class="d-flex flex-column justify-content-center align-items-center vh-100 bg-light">
-    <div class="card shadow p-4" style="min-width: 350px;">
-        <h3 class="text-center mb-3">Crear Cuenta</h3>
+<body>
+    <div class="card">
+        <div class="logo">
+            <img src="/static/img/logo_ministerio.png" class="sombra" style="height: 7rem;">
+            <img src="/static/img/logo.png" class="sombra" style="height: 7rem;">
+        </div>
+        
+        <h3>Crear Cuenta</h3>
 
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                <div class="alert alert-{% if message.tags == 'success' %}success{% else %}error{% endif %}">
+                    {{ message }}
+                </div>
             {% endfor %}
         {% endif %}
 
         <form method="post">
             {% csrf_token %}
-            <div class="mb-2">
+            <div>
                 <input type="text" name="username" placeholder="Usuario" class="form-control" required>
             </div>
-            <div class="mb-2">
-                <input type="email" name="email" placeholder="Email" class="form-control" required>
+            <div>
+                <input type="email" name="email" placeholder="Correo electrónico" class="form-control" required>
             </div>
-            <div class="mb-2">
+            <div>
                 <input type="password" name="password" placeholder="Contraseña" class="form-control" required>
             </div>
-            <div class="mb-3">
-                <input type="text" name="user_class" placeholder="Clase (administrador, editor o lector)" class="form-control">
+            <div>
+                <select name="user_class" class="form-control" required>
+                    <option value="" disabled selected>Seleccionar clase</option>
+                    <option value="administrador">Administrador</option>
+                    <option value="editor">Editor</option>
+                    <option value="lector">Lector</option>
+                </select>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            <button type="submit" class="btn">Registrarse</button>
         </form>
 
         <p class="text-center mt-3">

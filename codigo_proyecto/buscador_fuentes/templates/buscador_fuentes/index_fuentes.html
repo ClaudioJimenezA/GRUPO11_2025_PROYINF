@@ -1,39 +1,257 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
-<!-- Vinculación a tu archivo de estilos CSS -->
-<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filtrar Fuentes - VIGIFIA</title>
-
-
+    <title>Fuentes de Información | VIGIFIA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: {% if request.session.supabase_class == 'administrador' %}rgba(44, 62, 80, 0.85){% elif request.session.supabase_class == 'editor' %}rgba(52, 152, 219, 0.85){% else %}rgba(46, 125, 50, 0.85){% endif %};
+            --secondary-color: {% if request.session.supabase_class == 'administrador' %}rgba(52, 73, 94, 0.85){% elif request.session.supabase_class == 'editor' %}rgba(41, 128, 185, 0.85){% else %}rgba(56, 142, 60, 0.85){% endif %};
+            --accent-color: {% if request.session.supabase_class == 'administrador' %}#1abc9c{% elif request.session.supabase_class == 'editor' %}#3498db{% else %}#4caf50{% endif %};
+            --danger-color: #e74c3c;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('/static/img/fondo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            filter: blur(5px) brightness(1);
+            z-index: -1;
+        }
+        
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.25);
+            z-index: -1;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .brand-logo {
+            font-weight: 700;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .user-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+        
+        .main-container {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            margin: 2rem auto;
+            padding: 2rem;
+            width: 95%;
+            max-width: 800px;
+            flex-grow: 1;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin: 1rem 0 2rem;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            font-weight: 500;
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-card {
+            min-width: 200px;
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        @media (max-width: 992px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .brand-logo {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1.5rem;
+                width: 98%;
+                margin: 1rem auto;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .action-card {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="bg-primary text-white text-center py-4">
-        <h1>Sistema de Manejo de Fuentes de Información - VIGIFIA</h1>
-        <p>Consulta fuentes relevantes sobre Cambio Climático, Alimentación Sostenible y Recursos Hídricos.</p>
+    <header class="header">
+        <div class="d-flex align-items-center">
+            <h1 class="m-0 brand-logo">VIGIFIA</h1>
+        </div>
+        <h1 class="h3 mb-0" style="margin-left: 10rem;"><i class="fas fa-database me-2"></i> Fuentes de Información</h1>
+        <div class="d-flex align-items-center gap-3">
+            {% if request.session.supabase_user %}
+                <div class="user-badge">
+                    <i class="fas fa-user-circle me-2"></i>
+                    {{ request.session.supabase_user }} | {{ request.session.supabase_class }}
+                </div>
+                <a href="{% url 'logout' %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-out-alt me-1"></i> Salir
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-in-alt me-1"></i> Ingresar
+                </a>
+            {% endif %}
+        </div>
     </header>
-
-    <main class="container my-4">
-        <section id="filtro-sources" class="text-center">
-            <h2 class="mb-4">Opciones</h2>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="{% url 'agregar_fuentes' %}" class="btn btn-primary btn-lg">Agregar Fuentes</a>
-                <a href="{% url 'buscar_fuentes' %}" class="btn btn-primary btn-lg">Buscar Fuentes</a>
-            </div>
-        </section>
+    
+    <div class="main-container">
+        <h2 class="section-title"><i class="fas fa-filter me-2"></i> Gestión de Fuentes</h2>
+        <p class="text-center mb-4">Consulta fuentes relevantes sobre Cambio Climático, Alimentación Sostenible y Recursos Hídricos.</p>
         
-    </main>
+        <div class="action-buttons">
+            <a href="{% url 'agregar_fuentes' %}" class="action-card text-decoration-none">
+                <div class="action-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h3>Agregar Fuente</h3>
+                <p class="text-muted">Registra una nueva fuente de información</p>
+                <div class="btn btn-primary mt-2">Agregar</div>
+            </a>
+            
+            <a href="{% url 'buscar_fuentes' %}" class="action-card text-decoration-none">
+                <div class="action-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Buscar Fuentes</h3>
+                <p class="text-muted">Encuentra fuentes por nombre o etiquetas</p>
+                <div class="btn btn-primary mt-2">Buscar</div>
+            </a>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'admin_index' %}" class="btn btn-secondary px-4">
+                <i class="fas fa-arrow-left me-2"></i> Volver
+            </a>
+        </div>
+    </div>
+    
+    <footer>
+        <p class="m-0">Derechos reservados &copy; 2025 VIGIFIA</p>
+    </footer>
 
-   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<footer class="bg-light text-center py-3">
-    <a href="{% url 'admin_index' %}" class="btn btn-secondary mb-2">Volver al Admin</a>
-    <p>Derechos reservados &copy; 2024 VIGIFIA</p>
-</footer>
 </html>
