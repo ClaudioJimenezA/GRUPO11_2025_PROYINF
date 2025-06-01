@@ -11,8 +11,9 @@
     <p>Etiquetas: {{ documento.etiquetas }}</p>
 
     <a href="{% url 'descargar_pdf' documento.id %}">Descargar PDF</a> |
-    <a href="{% url 'confirmar_borrar' pdf_id=documento.id %}">Eliminar PDF</a>
-
+    {% if request.session.supabase_class != 'lector' %}
+        <a href="{% url 'confirmar_borrar' pdf_id=documento.id %}">Eliminar PDF</a>
+    {% endif %}
     <a href="{% url 'index_pdfs' %}">Volver al índice</a>
 </body>
 </html>
