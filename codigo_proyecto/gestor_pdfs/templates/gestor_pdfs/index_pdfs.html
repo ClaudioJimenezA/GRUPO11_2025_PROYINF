@@ -221,15 +221,16 @@
         <h2 class="section-title"><i class="fas fa-cog me-2"></i> Opciones de Gestión</h2>
         
         <div class="action-buttons">
-            <a href="{% url 'agregar_pdf' %}" class="action-card text-decoration-none">
-                <div class="action-icon">
-                    <i class="fas fa-plus-circle"></i>
-                </div>
-                <h3>Agregar PDF</h3>
-                <p class="text-muted">Sube un nuevo archivo PDF al sistema</p>
-                <div class="btn btn-primary mt-2">Agregar</div>
-            </a>
-            
+            {% if request.session.supabase_class != 'lector' %}
+                <a href="{% url 'agregar_pdf' %}" class="action-card text-decoration-none">
+                    <div class="action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3>Agregar PDF</h3>
+                    <p class="text-muted">Sube un nuevo archivo PDF al sistema</p>
+                    <div class="btn btn-primary mt-2">Agregar</div>
+                </a>
+             {% endif %}
             <a href="{% url 'buscar_pdf' %}" class="action-card text-decoration-none">
                 <div class="action-icon">
                     <i class="fas fa-search"></i>
