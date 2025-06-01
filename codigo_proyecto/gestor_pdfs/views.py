@@ -18,11 +18,15 @@ def detalle_pdf(request, pdf_id):
 
 # Vista para agregar un nuevo PDF
 def agregar_pdf(request):
+    # Si es lector, redirige a Buscar PDF (o devuelve 403)
+    if request.session.get('supabase_class') == 'lector':
+        return redirect('buscar_pdf')
+
     if request.method == 'POST':
         form = DocumentoPDFForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('index_pdfs')  # Redirige al índice después de agregar el PDF
+            return redirect('index_pdfs')
     else:
         form = DocumentoPDFForm()
     return render(request, 'gestor_pdfs/agregar_pdf.html', {'form': form})
@@ -54,23 +58,28 @@ def descargar_pdf(request, pdf_id):
         raise Http404("Archivo no encontrado")
 
 def borrar_pdf(request, pdf_id):
+    # Si es lector, redirige a Buscar PDF
+    if request.session.get('supabase_class') == 'lector':
+        return redirect('buscar_pdf')
+
     documento = get_object_or_404(DocumentoPDF, id=pdf_id)
     if request.method == 'POST':
         documento.delete()
         messages.success(request, "El PDF ha sido eliminado con éxito.")
-        return redirect('index_pdfs')  # Redirige al índice tras borrar
+        return redirect('buscar_pdf')
     return render(request, 'gestor_pdfs/confirmar_borrar.html', {'documento': documento})
 
 def modificar_pdf(request, pk):
-    pdf = get_object_or_404(DocumentoPDF, pk=pk)
+    # Si es lector, lo sacamos a Buscar PDF
+    if request.session.get('supabase_class') == 'lector':
+        return redirect('buscar_pdf')
 
+    pdf = get_object_or_404(DocumentoPDF, pk=pk)
     if request.method == 'POST':
         form = DocumentoPDFForm(request.POST, instance=pdf)
         if form.is_valid():
             form.save()
-            return redirect('buscar_pdf')  # Redirige al listado o a otra página
+            return redirect('buscar_pdf')
     else:
         form = DocumentoPDFForm(instance=pdf)
-
     return render(request, 'gestor_pdfs/modificar_pdf.html', {'form': form, 'pdf': pdf})
-
