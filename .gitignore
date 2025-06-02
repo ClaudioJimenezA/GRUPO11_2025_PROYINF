@@ -3,3 +3,7 @@ venv/
 .env/
 .venv/
 
+# Entorno virtual wsl
+venv/
+wslvenv/
+python3.12-venv_3.12.3-1ubuntu0.5_amd64.deb

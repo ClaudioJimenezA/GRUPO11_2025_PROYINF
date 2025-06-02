@@ -1,44 +1,333 @@
 {% load static %}
-<!-- editor/templates/editor/boletin_list.html -->
-
-
 <!DOCTYPE html>
 <html lang="es">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
-    <!-- Vinculación a tu archivo de estilos CSS -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boletines</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: {% if request.session.supabase_class == 'administrador' %}rgba(44, 62, 80, 0.85){% elif request.session.supabase_class == 'editor' %}rgba(52, 152, 219, 0.85){% else %}rgba(46, 125, 50, 0.85){% endif %};
+            --secondary-color: {% if request.session.supabase_class == 'administrador' %}rgba(52, 73, 94, 0.85){% elif request.session.supabase_class == 'editor' %}rgba(41, 128, 185, 0.85){% else %}rgba(56, 142, 60, 0.85){% endif %};
+            --accent-color: {% if request.session.supabase_class == 'administrador' %}#1abc9c{% elif request.session.supabase_class == 'editor' %}#3498db{% else %}#4caf50{% endif %};
+            --danger-color: #e74c3c;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('/static/img/fondo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            filter: blur(5px) brightness(1);
+            z-index: -1;
+        }
+        
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.25);
+            z-index: -1;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .brand-logo {
+            font-weight: 700;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .user-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+        
+        .main-container {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            margin: 2rem auto;
+            padding: 2rem;
+            width: 95%;
+            max-width: 1200px;
+            flex-grow: 1;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin: 2rem 0 1.5rem;
+        }
+        
+        .boletin-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent-color);
+            backdrop-filter: blur(4px);
+        }
+        
+        .boletin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .plantilla-tag {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .estado-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .publicado {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .borrador {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-new {
+            background-color: var(--accent-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn-new:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-back {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            margin-right: 1rem;
+            font-weight: 500;
+            box-shadow: none;
+        }
+        
+        .btn-back:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 992px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .brand-logo {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1.5rem;
+                width: 98%;
+                margin: 1rem auto;
+            }
+            
+            .btn-back, .btn-new {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="bg-primary text-white text-center py-3">
-        <h1>Panel de Administración</h1>
+    <header class="header">
+        <div class="d-flex align-items-center">
+            <h1 class="m-0 brand-logo">VIGIFIA</h1>
+        </div>
+        <h1 class="h3 mb-0" style="margin-left: 10rem;"><i class="fas fa-newspaper me-2"></i> Edición de Boletines</h1>
+        <div class="d-flex align-items-center gap-3">
+            {% if request.session.supabase_user %}
+                <div class="user-badge">
+                    <i class="fas fa-user-circle me-2"></i>
+                    {{ request.session.supabase_user }} | {{ request.session.supabase_class }}
+                </div>
+                <a href="{% url 'logout' %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-out-alt me-1"></i> Salir
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-in-alt me-1"></i> Ingresar
+                </a>
+            {% endif %}
+        </div>
     </header>
-    {% for boletin in boletines %}
-    <div>
-      <h3>{{ boletin.titulo }}</h3>
-       {% if boletin.es_plantilla %}
-      <p><em>Plantilla</em></p>
-      <a href="{% url 'usar_plantilla' boletin.pk %}">Usar como base</a>
-    {% else %}
-      <a href="{% url 'editar_boletin' boletin.pk %}">Editar</a>
-       {% endif %}
-       {% if not boletin.publicado %}
-            <a href="{% url 'eliminar_boletin' boletin.pk %}" class="btn btn-danger">Eliminar</a>
-        {% endif %}
-      <p>Estado: {% if boletin.publicado %}Publicado{% else %}Borrador{% endif %}</p>
-      <a href="{% url 'editar_boletin' boletin.pk %}">Editar</a>
-  </div>
-    {% endfor %}
-    <a href="{% url 'nuevo_boletin' %}" class="btn btn-primary">Crear nuevo boletín</a>
-    <footer class="bg-light text-center py-3">
-        <a href="{% url 'admin_index' %}" class="btn btn-secondary mb-2">Volver al Admin</a>
-        <p>Derechos reservados &copy; 2025 VIGIFIA</p>
+    
+    <div class="main-container">
+        <main>
+            <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+                <div >
+                    <a href="{% url 'admin_index' %}" class="btn btn-back">
+                        <i class="fas fa-arrow-left me-1"></i> Volver
+                    </a>
+                    <a href="{% url 'nuevo_boletin' %}" class="btn btn-new">
+                        <i class="fas fa-plus me-1"></i> Nuevo Boletín
+                    </a>
+                </div>
+            </div>
+
+            <!-- boletines normales -->
+            <h2 class="section-title"><i class="fas fa-file-alt me-2"></i> Boletines</h2>
+            <div class="row">
+                {% for boletin in boletines %}
+                    {% if not boletin.es_plantilla %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="boletin-card p-4 h-100">
+                            <h3 class="h5 mb-3">{{ boletin.titulo }}</h3>
+                            
+                            <div class="mb-3">
+                                <span class="estado-badge {% if boletin.publicado %}publicado{% else %}borrador{% endif %}">
+                                    {% if boletin.publicado %}
+                                        <i class="fas fa-check-circle me-1"></i> Publicado
+                                    {% else %}
+                                        <i class="fas fa-pencil-alt me-1"></i> Borrador
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="d-flex flex-wrap">
+                                <a href="{% url 'editar_boletin' boletin.pk %}" class="btn btn-action btn-primary mb-2">
+                                    <i class="fas fa-edit me-1"></i> Editar
+                                </a>
+                                
+                                {% if not boletin.publicado %}
+                                    <a href="{% url 'eliminar_boletin' boletin.pk %}" class="btn btn-action btn-danger mb-2">
+                                        <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info text-center" style="background-color: rgba(255, 255, 255, 0.9);">
+                            <i class="fas fa-info-circle me-2"></i> No hay boletines creados aún.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- plantillas -->
+            <h2 class="section-title"><i class="fas fa-copy me-2"></i> Plantillas</h2>
+            <div class="row">
+                {% for boletin in boletines %}
+                    {% if boletin.es_plantilla %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="boletin-card p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h3 class="h5 mb-0">{{ boletin.titulo }}</h3>
+                                <span class="plantilla-tag">Plantilla</span>
+                            </div>
+                            
+                            <div class="d-flex">
+                                <a href="{% url 'usar_plantilla' boletin.pk %}" class="btn btn-action btn-primary">
+                                    <i class="fas fa-copy me-1"></i> Usar como base
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info text-center" style="background-color: rgba(255, 255, 255, 0.9);">
+                            <i class="fas fa-info-circle me-2"></i> No hay plantillas creadas aún.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+    
+    <footer class="text-center">
+        <p class="m-0">Derechos reservados &copy; 2025 VIGIFIA</p>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
