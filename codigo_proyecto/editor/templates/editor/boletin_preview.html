@@ -33,7 +33,7 @@
     <div class="preview-container">
         <h1>{{ boletin.titulo }}</h1>
         {% if boletin.imagen %}
-            <img src="{{ boletin.imagen.url }}" style="max-width: 100%; height: auto;">
+            <img src="{{ boletin.imagen.url }}" alt= "Imagen del boletin" style="max-width: 100%; height: auto;">
         {% endif %}
         <div>
             {{ boletin.contenido|safe }}
