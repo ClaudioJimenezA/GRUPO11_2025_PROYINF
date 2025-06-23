@@ -84,7 +84,7 @@ def process_text(request):
         tex_filename = f"{sanitize_filename(titulo)}.tex"
         tex_file_path = os.path.join(latex_dir, tex_filename)
         pdf_filename = f"{sanitize_filename(titulo)}.pdf"
-        pdf_file_path = os.path.join(pdf_dir, pdf_filename)
+    
 
         # Guardar archivo LaTeX
         with open(tex_file_path, 'w') as tex_file:
