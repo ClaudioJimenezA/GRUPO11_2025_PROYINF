@@ -60,7 +60,7 @@ def buscar_fuentes(request):
     if query or etiqueta:
         if query:
             resultados = Fuente.objects.filter(nombre__icontains=query)
-        elif etiqueta:
+        else:
             resultados = Fuente.objects.filter(etiquetas__icontains=etiqueta)
     
     etiquetas = Fuente.objects.values_list('etiquetas', flat=True).distinct()
