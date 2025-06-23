@@ -2,7 +2,7 @@ from django.db import models
 
 class Plantilla(models.Model):
     nombre = models.CharField(max_length=255, unique=True)
-    descripcion = models.TextField(blank=True, null=True)
+    descripcion = models.TextField(blank=True)
     archivo_referencia = models.FileField(upload_to='plantillas_referencia/', blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
@@ -11,7 +11,7 @@ class Plantilla(models.Model):
 
 class ArchivoEntrada(models.Model):
     archivo = models.FileField(upload_to='archivos_entrada/', blank=True, null=True)
-    texto_procesado = models.TextField(blank=True, null=True)  # Texto extraído del archivo
+    texto_procesado = models.TextField(blank=True)  # Texto extraído del archivo
     fecha_subida = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
