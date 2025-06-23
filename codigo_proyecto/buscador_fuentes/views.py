@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 import json
 from .models import Fuente  # Importa el modelo Fuente que creaste
-from buscador_fuentes.services.gestor_fuentes import GestorFuentes
+
 
 def index_fuentes(request):
     fuentes = Fuente.objects.all()  # Obtener todas las fuentes
