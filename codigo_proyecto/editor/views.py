@@ -84,26 +84,6 @@ def editar_boletin(request, pk):
         else:
             print("Errores del formulario:", form.errors)
 
-# def boletin_form(request, pk=None):
-#     instance = Boletin.objects.get(pk=pk) if pk else None
-#     if request.method == 'POST':
-#         form = BoletinForm(request.POST, instance=instance)
-#         if form.is_valid():
-#             boletin = form.save(commit=False)
-#             accion = request.POST.get('accion')
-
-#             if accion == 'guardar':
-#                 boletin.estado = 'borrador'
-#                 boletin.save()
-#                 return redirect('lista_boletines')
-
-#             elif accion == 'previsualizar':
-#                 return render(request, 'editor/boletin_preview.html', {'boletin': boletin, 'preview': True})
-#     else:
-#         form = BoletinForm(instance=instance)
-
-#     return render(request, 'editor/boletin_form.html', {'form': form})
-
 def boletin_form(request, pk=None):
     print("LLEGÓ AL FORMULARIO")
     print("Método:", request.method)
