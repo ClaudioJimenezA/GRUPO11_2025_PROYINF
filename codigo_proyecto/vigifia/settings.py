@@ -83,7 +83,6 @@ DATABASES = {
     },
     'postgresql':{
      'ENGINE': 'django.db.backends.postgresql',
-     'NAME': 'mi_base_de_datos',
      'NAME': 'mi_base_de_datos',  # El nombre de tu base de datos
      'USER': 'postgres',           # Usuario por defecto de PostgreSQL
      'PASSWORD': 'nueva_contraseña',                # Sin contraseña
