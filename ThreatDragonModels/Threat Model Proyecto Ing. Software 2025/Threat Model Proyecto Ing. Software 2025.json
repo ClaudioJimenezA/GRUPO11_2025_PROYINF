@@ -1,0 +1,35 @@
+{
+  "version": "2.6.2",
+  "summary": {
+    "title": "Threat Model Proyecto Ing. Software 2025",
+    "owner": "Andrés Jablonca",
+    "description": "",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "id": 0,
+        "title": "New STRIDE diagram",
+        "diagramType": "STRIDE",
+        "placeholder": "New STRIDE diagram description",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.6.2",
+        "cells": []
+      },
+      {
+        "id": 1,
+        "title": "New generic diagram",
+        "diagramType": "Generic",
+        "placeholder": "New generic diagram description",
+        "thumbnail": "./public/content/images/thumbnail.jpg",
+        "version": "2.6.2",
+        "cells": []
+      }
+    ],
+    "diagramTop": 2,
+    "reviewer": "Andrés Jablonca",
+    "threatTop": 0
+  }
+}
